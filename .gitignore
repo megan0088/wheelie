@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+*.textClipping
+
+# Xcode / build
+Spike3DMap/build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+# Lokal per mesin
+.claude/
+
+# Rahasia (token Mapillary dibaca dari env MAPILLARY_TOKEN)
+.env

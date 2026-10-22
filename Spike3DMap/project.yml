@@ -1,0 +1,38 @@
+name: Spike3DMap
+options:
+  bundleIdPrefix: com.egaaaa.wheelie
+  deploymentTarget:
+    iOS: "18.0"
+settingGroups:
+  common:
+    SWIFT_VERSION: "5.0"
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    INFOPLIST_KEY_NSCameraUsageDescription: "Wheelie memakai kamera untuk menampilkan panah rute AR di jalan."
+    INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Wheelie memakai lokasi untuk memandu rute kursi roda."
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: R93K2HFM78
+targets:
+  # Versi Blok M "ega" (Jakarta Selatan): inti Blok M, status jalur OSM + BIG (data/blok-m/raw/jalankan.sh), tanpa dunia 3D
+  WheelieBlokM:
+    type: application
+    platform: iOS
+    sources: [Spike3DMap, AreaBlokM]
+    settings:
+      groups: [common]
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.egaaaa.wheelie.blokm
+        PRODUCT_NAME: WheelieBlokM
+        INFOPLIST_KEY_CFBundleDisplayName: "ega"
+  # Versi MG: data pilot Blok M apa adanya (data/BlokM_Pilot_Features_19_oct_26.geojson lewat
+  # data/tools/convert_geojson_area.py), tanpa status OSM + BIG
+  WheelieMG:
+    type: application
+    platform: iOS
+    sources: [Spike3DMap, AreaMG]
+    settings:
+      groups: [common]
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.egaaaa.wheelie.mg
+        PRODUCT_NAME: WheelieMG
+        INFOPLIST_KEY_CFBundleDisplayName: "WheelieMG"

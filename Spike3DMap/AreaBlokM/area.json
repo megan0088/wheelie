@@ -1,0 +1,13 @@
+{
+ "name": "Blok M",
+ "center": [
+  -6.2425,
+  106.8003
+ ],
+ "span": 0.0136,
+ "defaultDestination": "Blok M Square",
+ "startLabel": "Menunggu lokasi GPS…",
+ "coverage": "Inti Blok M – Melawai (OSM + BIG RBI 25K)",
+ "has3D": false,
+ "dataUpdated": "2026-10-22"
+}

@@ -1,0 +1,505 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00CF0A10711A552C5CCF02BE /* World3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7844D000FD9C8D8267636803 /* World3DView.swift */; };
+		08E2D910D6B27B5DA512C0C0 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381E239F059F13896FF34C9D /* LocationService.swift */; };
+		27763B8570BEB6D2E0CC289D /* area.json in Resources */ = {isa = PBXBuildFile; fileRef = 032BE4BF66FC5D0C0AEFF347 /* area.json */; };
+		2DA4DD0DBEE31101C9572A12 /* World3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7844D000FD9C8D8267636803 /* World3DView.swift */; };
+		4527190E0DEAD77C5B63BA35 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381E239F059F13896FF34C9D /* LocationService.swift */; };
+		4FABE1BF3DEF56F274722978 /* Spike3DMapApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90FCFA809C19AC20A52C052 /* Spike3DMapApp.swift */; };
+		5280BB4A06B7C276C0A43BFD /* DariStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0673232AE0217F89DBF479 /* DariStyle.swift */; };
+		57FA39C726F41C084E158C1F /* Prototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5526F01A7D367C9650CDCBB6 /* Prototype.swift */; };
+		66FA6EA552CA0F472CB8E6FF /* bsd.json in Resources */ = {isa = PBXBuildFile; fileRef = C54A4BB1C4253BB3A27B1F38 /* bsd.json */; };
+		6A1763A20260E5216BF05495 /* tempat.json in Resources */ = {isa = PBXBuildFile; fileRef = BEECDA1CD04E22A65B5DA24B /* tempat.json */; };
+		839E2410B68382F17DEE8308 /* ARNavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51343B8375FE1138D7EEB986 /* ARNavView.swift */; };
+		841AA4E19100E8BA68FCB53B /* tempat.json in Resources */ = {isa = PBXBuildFile; fileRef = EA2E8968CA2B0476F135EE37 /* tempat.json */; };
+		A645D16BE474861F30A71285 /* area.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E0ADC12964244AD66C80FE6 /* area.json */; };
+		A7DFE23ECAF677BBBBF4BD08 /* DariStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0673232AE0217F89DBF479 /* DariStyle.swift */; };
+		B1F00CC4F754CA7594A360E1 /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0147C5D85FA51D0043C58E8 /* Conditions.swift */; };
+		D2E7833E8DB642D41A5BB642 /* StreetPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7889A27EBEDA6F2DEB3580 /* StreetPhotos.swift */; };
+		D5855ED7372716C21BF995AA /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0147C5D85FA51D0043C58E8 /* Conditions.swift */; };
+		D945564826501DF916E15A39 /* ARNavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51343B8375FE1138D7EEB986 /* ARNavView.swift */; };
+		DAD9BB6EE9CABB49270E711B /* streetview.json in Resources */ = {isa = PBXBuildFile; fileRef = 323B67479B9B8A1561BA0351 /* streetview.json */; };
+		DBBE85134ECE321F48FB1884 /* Prototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5526F01A7D367C9650CDCBB6 /* Prototype.swift */; };
+		E7D637C6C3C73289664267AC /* Spike3DMapApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90FCFA809C19AC20A52C052 /* Spike3DMapApp.swift */; };
+		E8107109EFDD5ACEE4AFDD82 /* Reviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CA0CC6E5BE9E4991AAF9D6 /* Reviews.swift */; };
+		E9CC8C0958173036DD2D75B9 /* streetview.json in Resources */ = {isa = PBXBuildFile; fileRef = FAC84BA99B2050D5033CFFDF /* streetview.json */; };
+		EEA754B86BFA6643A1D9185A /* StreetPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7889A27EBEDA6F2DEB3580 /* StreetPhotos.swift */; };
+		FB368FE04A99BC2CF83B846E /* bsd.json in Resources */ = {isa = PBXBuildFile; fileRef = FA50F6563570EC40D89B6FE9 /* bsd.json */; };
+		FE419EACA253EF675CB99E0F /* Reviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CA0CC6E5BE9E4991AAF9D6 /* Reviews.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		032BE4BF66FC5D0C0AEFF347 /* area.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = area.json; sourceTree = "<group>"; };
+		1F0673232AE0217F89DBF479 /* DariStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DariStyle.swift; sourceTree = "<group>"; };
+		27A9B28F359EA8DF9ADB93E6 /* WheelieBlokM.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WheelieBlokM.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		323B67479B9B8A1561BA0351 /* streetview.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = streetview.json; sourceTree = "<group>"; };
+		36FB54DAE901227CBE400226 /* WheelieMG.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WheelieMG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		381E239F059F13896FF34C9D /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		51343B8375FE1138D7EEB986 /* ARNavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNavView.swift; sourceTree = "<group>"; };
+		5526F01A7D367C9650CDCBB6 /* Prototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prototype.swift; sourceTree = "<group>"; };
+		5D7889A27EBEDA6F2DEB3580 /* StreetPhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetPhotos.swift; sourceTree = "<group>"; };
+		7844D000FD9C8D8267636803 /* World3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = World3DView.swift; sourceTree = "<group>"; };
+		7E0ADC12964244AD66C80FE6 /* area.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = area.json; sourceTree = "<group>"; };
+		A7CA0CC6E5BE9E4991AAF9D6 /* Reviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reviews.swift; sourceTree = "<group>"; };
+		A90FCFA809C19AC20A52C052 /* Spike3DMapApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spike3DMapApp.swift; sourceTree = "<group>"; };
+		BEECDA1CD04E22A65B5DA24B /* tempat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tempat.json; sourceTree = "<group>"; };
+		C0147C5D85FA51D0043C58E8 /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
+		C54A4BB1C4253BB3A27B1F38 /* bsd.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bsd.json; sourceTree = "<group>"; };
+		EA2E8968CA2B0476F135EE37 /* tempat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tempat.json; sourceTree = "<group>"; };
+		FA50F6563570EC40D89B6FE9 /* bsd.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bsd.json; sourceTree = "<group>"; };
+		FAC84BA99B2050D5033CFFDF /* streetview.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = streetview.json; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		51ED746DC0BDC1599FFC23FC /* AreaBlokM */ = {
+			isa = PBXGroup;
+			children = (
+				032BE4BF66FC5D0C0AEFF347 /* area.json */,
+				FA50F6563570EC40D89B6FE9 /* bsd.json */,
+				FAC84BA99B2050D5033CFFDF /* streetview.json */,
+				BEECDA1CD04E22A65B5DA24B /* tempat.json */,
+			);
+			path = AreaBlokM;
+			sourceTree = "<group>";
+		};
+		572B89F4DC1919CA42FBFF4F /* Spike3DMap */ = {
+			isa = PBXGroup;
+			children = (
+				51343B8375FE1138D7EEB986 /* ARNavView.swift */,
+				C0147C5D85FA51D0043C58E8 /* Conditions.swift */,
+				1F0673232AE0217F89DBF479 /* DariStyle.swift */,
+				381E239F059F13896FF34C9D /* LocationService.swift */,
+				5526F01A7D367C9650CDCBB6 /* Prototype.swift */,
+				A7CA0CC6E5BE9E4991AAF9D6 /* Reviews.swift */,
+				A90FCFA809C19AC20A52C052 /* Spike3DMapApp.swift */,
+				5D7889A27EBEDA6F2DEB3580 /* StreetPhotos.swift */,
+				7844D000FD9C8D8267636803 /* World3DView.swift */,
+			);
+			path = Spike3DMap;
+			sourceTree = "<group>";
+		};
+		6A760AD0F9C24EFA3B3F4224 /* AreaMG */ = {
+			isa = PBXGroup;
+			children = (
+				7E0ADC12964244AD66C80FE6 /* area.json */,
+				C54A4BB1C4253BB3A27B1F38 /* bsd.json */,
+				323B67479B9B8A1561BA0351 /* streetview.json */,
+				EA2E8968CA2B0476F135EE37 /* tempat.json */,
+			);
+			path = AreaMG;
+			sourceTree = "<group>";
+		};
+		75CA2A72C795CE80DA8F9FA9 = {
+			isa = PBXGroup;
+			children = (
+				51ED746DC0BDC1599FFC23FC /* AreaBlokM */,
+				6A760AD0F9C24EFA3B3F4224 /* AreaMG */,
+				572B89F4DC1919CA42FBFF4F /* Spike3DMap */,
+				F23AD417B998BC355FB6E40C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F23AD417B998BC355FB6E40C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				27A9B28F359EA8DF9ADB93E6 /* WheelieBlokM.app */,
+				36FB54DAE901227CBE400226 /* WheelieMG.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		58A7FF702550A8AE4F81365C /* WheelieMG */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4AF938751B616A98C5715800 /* Build configuration list for PBXNativeTarget "WheelieMG" */;
+			buildPhases = (
+				180791A710F78A789FFDFFC3 /* Sources */,
+				87225347C3A460B17E372420 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WheelieMG;
+			packageProductDependencies = (
+			);
+			productName = WheelieMG;
+			productReference = 36FB54DAE901227CBE400226 /* WheelieMG.app */;
+			productType = "com.apple.product-type.application";
+		};
+		7E4127F2DD7F8A958A92CC50 /* WheelieBlokM */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8448365077D95F7955544D4E /* Build configuration list for PBXNativeTarget "WheelieBlokM" */;
+			buildPhases = (
+				79FE2822D5DA1686F124CA64 /* Sources */,
+				AE0883E13A783E9E96B98B1D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WheelieBlokM;
+			packageProductDependencies = (
+			);
+			productName = WheelieBlokM;
+			productReference = 27A9B28F359EA8DF9ADB93E6 /* WheelieBlokM.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C742466C93ACBA781C7F80F4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					58A7FF702550A8AE4F81365C = {
+						DevelopmentTeam = R93K2HFM78;
+						ProvisioningStyle = Automatic;
+					};
+					7E4127F2DD7F8A958A92CC50 = {
+						DevelopmentTeam = R93K2HFM78;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 4E767FD1C3E4062AD253341A /* Build configuration list for PBXProject "Spike3DMap" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 75CA2A72C795CE80DA8F9FA9;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F23AD417B998BC355FB6E40C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7E4127F2DD7F8A958A92CC50 /* WheelieBlokM */,
+				58A7FF702550A8AE4F81365C /* WheelieMG */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		87225347C3A460B17E372420 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A645D16BE474861F30A71285 /* area.json in Resources */,
+				66FA6EA552CA0F472CB8E6FF /* bsd.json in Resources */,
+				DAD9BB6EE9CABB49270E711B /* streetview.json in Resources */,
+				841AA4E19100E8BA68FCB53B /* tempat.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE0883E13A783E9E96B98B1D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				27763B8570BEB6D2E0CC289D /* area.json in Resources */,
+				FB368FE04A99BC2CF83B846E /* bsd.json in Resources */,
+				E9CC8C0958173036DD2D75B9 /* streetview.json in Resources */,
+				6A1763A20260E5216BF05495 /* tempat.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		180791A710F78A789FFDFFC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				839E2410B68382F17DEE8308 /* ARNavView.swift in Sources */,
+				D5855ED7372716C21BF995AA /* Conditions.swift in Sources */,
+				A7DFE23ECAF677BBBBF4BD08 /* DariStyle.swift in Sources */,
+				4527190E0DEAD77C5B63BA35 /* LocationService.swift in Sources */,
+				57FA39C726F41C084E158C1F /* Prototype.swift in Sources */,
+				E8107109EFDD5ACEE4AFDD82 /* Reviews.swift in Sources */,
+				4FABE1BF3DEF56F274722978 /* Spike3DMapApp.swift in Sources */,
+				D2E7833E8DB642D41A5BB642 /* StreetPhotos.swift in Sources */,
+				00CF0A10711A552C5CCF02BE /* World3DView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79FE2822D5DA1686F124CA64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D945564826501DF916E15A39 /* ARNavView.swift in Sources */,
+				B1F00CC4F754CA7594A360E1 /* Conditions.swift in Sources */,
+				5280BB4A06B7C276C0A43BFD /* DariStyle.swift in Sources */,
+				08E2D910D6B27B5DA512C0C0 /* LocationService.swift in Sources */,
+				DBBE85134ECE321F48FB1884 /* Prototype.swift in Sources */,
+				FE419EACA253EF675CB99E0F /* Reviews.swift in Sources */,
+				E7D637C6C3C73289664267AC /* Spike3DMapApp.swift in Sources */,
+				EEA754B86BFA6643A1D9185A /* StreetPhotos.swift in Sources */,
+				2DA4DD0DBEE31101C9572A12 /* World3DView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0AFA1FDE6B275818151DEFC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R93K2HFM78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ega;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Wheelie memakai kamera untuk menampilkan panah rute AR di jalan.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wheelie memakai lokasi untuk memandu rute kursi roda.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.egaaaa.wheelie.blokm;
+				PRODUCT_NAME = WheelieBlokM;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		182D7A02CB4F10E61A4A10DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R93K2HFM78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ega;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Wheelie memakai kamera untuk menampilkan panah rute AR di jalan.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wheelie memakai lokasi untuk memandu rute kursi roda.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.egaaaa.wheelie.blokm;
+				PRODUCT_NAME = WheelieBlokM;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3AED8AB1564CEDB10A893EEE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R93K2HFM78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WheelieMG;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Wheelie memakai kamera untuk menampilkan panah rute AR di jalan.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wheelie memakai lokasi untuk memandu rute kursi roda.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.egaaaa.wheelie.mg;
+				PRODUCT_NAME = WheelieMG;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9087B6FF1EB1B80587C4784F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E5E00C2CA4177A25104F1BBB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R93K2HFM78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WheelieMG;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Wheelie memakai kamera untuk menampilkan panah rute AR di jalan.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wheelie memakai lokasi untuk memandu rute kursi roda.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.egaaaa.wheelie.mg;
+				PRODUCT_NAME = WheelieMG;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EA8E26EE85737497146AB76F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4AF938751B616A98C5715800 /* Build configuration list for PBXNativeTarget "WheelieMG" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5E00C2CA4177A25104F1BBB /* Debug */,
+				3AED8AB1564CEDB10A893EEE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4E767FD1C3E4062AD253341A /* Build configuration list for PBXProject "Spike3DMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9087B6FF1EB1B80587C4784F /* Debug */,
+				EA8E26EE85737497146AB76F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8448365077D95F7955544D4E /* Build configuration list for PBXNativeTarget "WheelieBlokM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				182D7A02CB4F10E61A4A10DE /* Debug */,
+				0AFA1FDE6B275818151DEFC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C742466C93ACBA781C7F80F4 /* Project object */;
+}

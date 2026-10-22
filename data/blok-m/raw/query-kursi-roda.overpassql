@@ -1,0 +1,21 @@
+[out:json][timeout:120][bbox:{{BBOX}}];
+(
+  way["highway"~"^(footway|path|pedestrian|steps|elevator|living_street)$"];
+  way["footway"];
+  way["sidewalk"~"^(both|left|right|yes)$"];
+  nwr["wheelchair"];
+  nwr["toilets:wheelchair"];
+  nwr["ramp:wheelchair"];
+  nwr["ramp"];
+  node["kerb"];
+  node["barrier"="kerb"];
+  nwr["tactile_paving"];
+  nwr["highway"="elevator"];
+  node["highway"="crossing"];
+  nwr["entrance"];
+  nwr["amenity"="toilets"];
+  nwr["capacity:disabled"];
+  nwr["public_transport"~"^(station|platform|stop_position)$"];
+  node["highway"="bus_stop"];
+);
+out meta geom;
