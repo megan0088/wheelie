@@ -13,3 +13,6 @@ xcuserdata/
 
 # Rahasia (token Mapillary dibaca dari env MAPILLARY_TOKEN)
 .env
+
+# Dibuat ulang oleh pasang-iphone.sh / xcodegen (berisi Team ID masing-masing)
+Spike3DMap/Spike3DMap.xcodeproj/

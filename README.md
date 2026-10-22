@@ -13,14 +13,30 @@ yang tiap ruasnya diberi status aksesibilitas, lalu diperbaiki lewat survei lapa
 Kode aplikasi dipakai bersama (`Spike3DMap/Spike3DMap`); tiap target membundel folder datanya sendiri
 (`Spike3DMap/AreaBlokM`, `Spike3DMap/AreaMG`).
 
-## Menjalankan
+## Memasang di iPhone (dua aplikasi sekaligus)
+
+Satu perintah mem-build dan memasang **ega** dan **WheelieMG** ke iPhone yang tersambung ke Mac:
 
 ```bash
-cd Spike3DMap && xcodegen generate
+git clone https://github.com/megan0088/wheelie.git && cd wheelie
+sh pasang-iphone.sh                               # akun Apple Ega
+sh pasang-iphone.sh <TEAM_ID> com.<namamu>.wheelie   # akun Apple lain
 ```
 
-Buka `Spike3DMap.xcodeproj`, pilih skema `WheelieBlokM` atau `WheelieMG`, jalankan di iPhone. Rute hanya dihitung
-dari GPS asli saat berada di area peta; izinkan lokasi dan nyalakan "Lokasi Tepat".
+Persiapan sekali saja:
+
+1. Mac dengan Xcode, dan `brew install xcodegen`.
+2. Login akun Apple di Xcode → Settings → Accounts (akun gratis cukup). **Team ID** ada di situ.
+3. iPhone: sambungkan lewat kabel, percayai Mac ini, nyalakan **Settings → Privacy & Security → Developer Mode**.
+4. Setelah terpasang, buka **Settings → General → VPN & Device Management** dan percayai sertifikat developer.
+
+Akun gratis: aplikasi berlaku ±7 hari, lalu jalankan ulang `pasang-iphone.sh`. Prefix bundle harus unik per akun
+(bundle `com.egaaaa.*` hanya bisa dipakai tim Ega).
+
+`Spike3DMap.xcodeproj` tidak disimpan di repo; dibuat ulang oleh script (atau
+`WHEELIE_TEAM=<TEAM_ID> WHEELIE_BUNDLE_PREFIX=com.<namamu>.wheelie xcodegen generate` di folder `Spike3DMap`)
+supaya berisi Team ID masing-masing. Rute hanya dihitung dari GPS asli saat berada di area peta; izinkan lokasi dan
+nyalakan "Lokasi Tepat".
 
 ## Memperbarui data
 
