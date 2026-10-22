@@ -144,6 +144,8 @@ struct WalkGraph: Decodable {
     let reasons: [String]?
     /// Id way OSM per segmen — kunci hasil survei supaya tetap menempel saat graf dibuat ulang.
     let osmWay: [Int]?
+    /// Nama jalan per segmen (kosong kalau tidak bernama), untuk banner navigasi.
+    let names: [String]?
 
     static let roadKinds: Set<String> = ["service", "residential", "tertiary", "unclassified", "secondary", "primary"]
 

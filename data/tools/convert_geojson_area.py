@@ -41,7 +41,7 @@ for f in pts:
         closed = b in CLOSED or f['properties'].get('locked') == 'yes'
         barriers[key(f['geometry']['coordinates'])] = 'barrier_closed' if closed else 'barrier'
 
-segs, paths = {}, []
+segs, names, paths = {}, {}, []
 for f in lines:
     hw = f['properties'].get('highway')
     if hw not in WALK and hw != 'steps':
@@ -58,6 +58,7 @@ for f in lines:
             if bk == 'barrier_closed' or (bk == 'barrier' and k not in ('barrier_closed', 'steps')):
                 k = bk
         segs[tuple(sorted((a, b)))] = k
+        names[tuple(sorted((a, b)))] = f['properties'].get('name', '')
 
 ids = sorted({n for ab in segs for n in ab})
 index = {n: i for i, n in enumerate(ids)}
@@ -65,6 +66,7 @@ keys = sorted(segs)
 nodes = [xz(n[1], n[0]) for n in ids]
 edges = [[index[a], index[b]] for a, b in keys]
 kinds = [segs[k] for k in keys]
+street = [names[k] for k in keys]  # nama jalan untuk instruksi navigasi
 
 KMAP = {'station': 'Stasiun', 'subway_entrance': 'Stasiun', 'bus_station': 'Halte', 'platform': 'Halte', 'mall': 'Mall',
         'department_store': 'Mall', 'park': 'Taman', 'garden': 'Taman', 'playground': 'Taman', 'hospital': 'Rumah sakit',
@@ -132,7 +134,7 @@ while n != start:
 route.append(nodes[start]); route.reverse()
 
 snap = {'minLat': BB[0], 'maxLat': BB[1], 'minLon': BB[2], 'maxLon': BB[3], 'min': xz(BB[1], BB[2]), 'max': xz(BB[0], BB[3])}
-out = {'graph': {'nodes': nodes, 'edges': edges, 'kinds': kinds, 'goal': goal}, 'origin': [LAT0, LON0], 'snapshot': snap,
+out = {'graph': {'nodes': nodes, 'edges': edges, 'kinds': kinds, 'goal': goal, 'names': street}, 'origin': [LAT0, LON0], 'snapshot': snap,
        'buildings': [], 'paths': paths, 'areas': [], 'pois': [], 'route': route}
 json.dump(out, open(f'{outdir}/bsd.json', 'w'), separators=(',', ':'))
 json.dump(places, open(f'{outdir}/tempat.json', 'w'), ensure_ascii=False)

@@ -56,7 +56,7 @@ def barrier(n):
     if not b or b == 'kerb': return None
     return 'barrier_closed' if b in CLOSED or t.get('locked') == 'yes' else 'barrier'
 
-idx, nodes, edges, kinds, status, factor, reasons, ways_of, paths = {}, [], [], [], [], [], [], [], []
+idx, nodes, edges, kinds, status, factor, reasons, ways_of, names, paths = {}, [], [], [], [], [], [], [], [], []
 seen = set()
 def ni(n):
     if n not in idx:
@@ -78,7 +78,7 @@ for f in jar:
             elif bk == 'barrier' and k not in ('barrier_closed', 'steps'):
                 k = bk; st = 'hatiHati' if st != 'tidakBisa' else st; why = 'Penghalang (cek celah)' + ('; ' + why if why else '')
         edges.append([ni(a), ni(b)]); kinds.append(k); status.append(st)
-        factor.append(fa); reasons.append(why); ways_of.append(p['osm_way'])
+        factor.append(fa); reasons.append(why); ways_of.append(p['osm_way']); names.append(p.get('nama', ''))
 
 # Tempat: pakai daftar yang sudah dikurasi di tempat.json, hitung ulang posisi ke pusat baru.
 old = json.load(open(f'{outdir}/tempat.json'))
@@ -113,7 +113,7 @@ route.append(nodes[start]); route.reverse()
 
 snap = {'minLat': S, 'maxLat': N, 'minLon': W, 'maxLon': E, 'min': xz(N, W), 'max': xz(S, E)}
 out = {'graph': {'nodes': nodes, 'edges': edges, 'kinds': kinds, 'goal': goal, 'status': status, 'factor': factor,
-                 'reasons': reasons, 'osmWay': ways_of},
+                 'reasons': reasons, 'osmWay': ways_of, 'names': names},
        'origin': [LAT0, LON0], 'snapshot': snap, 'buildings': [], 'paths': paths, 'areas': [], 'pois': [], 'route': route}
 json.dump(out, open(f'{outdir}/bsd.json', 'w'), separators=(',', ':'), ensure_ascii=False)
 json.dump(places, open(f'{outdir}/tempat.json', 'w'), ensure_ascii=False)

@@ -389,19 +389,12 @@ struct HomeView: View {
     }
 }
 
-/// Peta kecil miring sebagai "foto" tempat; aplikasi belum punya foto tempat dan tidak mengarangnya.
+/// Peta statis miring sebagai "foto" tempat; aplikasi belum punya foto tempat dan tidak mengarangnya.
 struct PlaceMapThumb: View {
     let place: Place
     var distance: Double = 650
     var body: some View {
-        let c = CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon)
-        Map(initialPosition: .camera(MapCamera(centerCoordinate: c, distance: distance, heading: 25, pitch: 55))) {
-            Marker(place.name, coordinate: c).tint(Color.dariAction)
-        }
-        .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .excludingAll))
-        .mapControlVisibility(.hidden)
-        .mapControls {}
-        .allowsHitTesting(false)
+        MapSnapshot(center: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon), distance: distance, pitch: 50)
     }
 }
 
@@ -820,32 +813,22 @@ struct RoutePickerView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Map(position: .constant(cameraRect(current?.plan.route))) {
+            Map(position: .constant(cameraRect(current?.plan.route, pad: 0.12))) {
                 if let r = current?.plan.route {
-                    MapPolyline(coordinates: r.points.map(AppModel.coordinate))
-                        .stroke(Color.dariAction, style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round))
-                    Annotation("", coordinate: AppModel.coordinate(r.points[0])) {
-                        Circle().fill(Color.dariAction).frame(width: 18, height: 18)
-                            .overlay(Circle().stroke(.white, lineWidth: 4)).shadow(radius: 3)
-                    }
-                    Annotation("", coordinate: AppModel.coordinate(r.points.last!), anchor: .bottom) {
-                        MapBubble(symbol: "mappin", tint: .dariAccess, title: place.name, subtitle: "\(Int(r.length)) m")
-                    }
-                    ForEach(Array(hazards.enumerated()), id: \.element.id) { i, h in
-                        Annotation("", coordinate: AppModel.coordinate(r.position(at: h.at)), anchor: i == 0 ? .bottom : .center) {
-                            if i == 0 {
-                                MapBubble(symbol: "exclamationmark.triangle.fill", tint: Color(h.condition.color), title: h.title, subtitle: nil)
-                            } else {
-                                IconDot(symbol: "exclamationmark", tint: Color(h.condition.color), size: 20, filled: true)
-                                    .overlay(Circle().stroke(.white, lineWidth: 2))
-                            }
+                    WalkLine(points: r.points.map(AppModel.coordinate))
+                    Annotation("", coordinate: AppModel.coordinate(r.points[0])) { StartDot() }
+                    Marker(place.name, coordinate: AppModel.coordinate(r.points.last!)).tint(Color.dariUrgent)
+                    ForEach(hazards) { h in
+                        Annotation("", coordinate: AppModel.coordinate(r.position(at: h.at))) {
+                            HazardDot(condition: h.condition) { preview = h }
                         }
                     }
                 }
             }
             .mapStyle(.standard(pointsOfInterest: .excludingAll))
-            .safeAreaPadding(.top, 70)
-            .safeAreaPadding(.bottom, 480)
+            .mapControls {}
+            .safeAreaPadding(.top, 60)
+            .safeAreaPadding(.bottom, 350)
             .ignoresSafeArea()
 
             routePanel
@@ -886,7 +869,7 @@ struct RoutePickerView: View {
     }
 
     private var routePanel: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             Capsule().fill(Color.dariLine).frame(width: 36, height: 5).frame(maxWidth: .infinity)
             if options.isEmpty {
                 Label(model.gpsInArea ? "Menghitung rute…" : "Menunggu lokasi GPS…", systemImage: "location")
@@ -921,89 +904,96 @@ struct RoutePickerView: View {
 
     @ViewBuilder private func summary(_ o: RouteOption) -> some View {
         HStack(alignment: .firstTextBaseline) {
-            Text("\(Int(o.plan.route.length)) m · \(o.minutes) mnt").font(.title2.bold()).foregroundStyle(Color.dariPrimary)
+            Text("\(o.minutes) mnt").font(.title2.bold()).foregroundStyle(Color.dariAccess)
+            Text("(\(Int(o.plan.route.length)) m)").font(.title3).foregroundStyle(Color.dariMuted)
             Spacer()
-            Button("Detail") { detail = o }.font(.subheadline.bold())
+            HStack(spacing: 4) {
+                Image(systemName: "star.fill")
+                Text("Keyakinan \(o.confidence.title.lowercased())")
+            }
+            .font(.caption.bold()).foregroundStyle(.white)
+            .padding(.horizontal, 10).padding(.vertical, 5).background(o.confidence.tint, in: Capsule())
         }
-        HStack(spacing: 6) {
-            Image(systemName: "star.fill").foregroundStyle(Color.dariAction)
-            Text("Keyakinan rute aksesibel").font(.subheadline).foregroundStyle(Color.dariPrimary)
-            Spacer()
-            Text(o.confidence.title).font(.caption.bold()).foregroundStyle(.white)
-                .padding(.horizontal, 10).padding(.vertical, 4).background(o.confidence.tint, in: Capsule())
-        }
-        if let d = dataDate() {
-            Label("Data diperbarui \(d)", systemImage: "calendar").font(.caption).foregroundStyle(Color.dariMuted)
+        HStack(spacing: 0) {
+            stat("figure.walk", "\(hazards.filter { $0.title.hasPrefix("Penyeberangan") }.count)", "penyeberangan")
+            stat("car.fill", "\(Int(roadMeters(o))) m", "jalan mobil")
+            stat("questionmark.circle", "\(Int(o.plan.unknownMeters)) m", "belum dicek")
         }
         if let h = hazards.first {
-            HazardCard(title: h.title, subtitle: "\(Int(h.at)) m di depan" + (hazards.count > 1 ? " · +\(hazards.count - 1) hambatan lain" : ""),
+            HazardCard(title: h.title, subtitle: "\(Int(h.at)) m dari awal" + (hazards.count > 1 ? " · +\(hazards.count - 1) hambatan lain" : ""),
                        tint: Color(h.condition.color)) { preview = h }
-        } else {
-            Label("Tidak ada hambatan tercatat di rute ini", systemImage: "checkmark.circle.fill")
-                .font(.subheadline).foregroundStyle(Color.dariAccess)
-                .frame(maxWidth: .infinity, alignment: .leading).padding(12)
-                .background(Color.dariAccess.opacity(0.1), in: RoundedRectangle(cornerRadius: 14))
         }
-        Button {
-            let photos = StreetPhoto.along(o.plan.route)
-            if photos.isEmpty { lookAt = hazards.first?.point ?? SIMD2(o.plan.route.points[0].x, o.plan.route.points[0].z) }
-            else { routePreview = photos }
-        } label: {
-            Label("Lihat pratinjau 360°", systemImage: "rotate.3d")
-                .font(.subheadline.bold()).frame(maxWidth: .infinity, alignment: .leading).padding(12)
-                .background(Color.dariAction.opacity(0.1), in: RoundedRectangle(cornerRadius: 14))
+        HStack(spacing: 10) {
+            Button {
+                let photos = StreetPhoto.along(o.plan.route)
+                if photos.isEmpty { lookAt = hazards.first?.point ?? SIMD2(o.plan.route.points[0].x, o.plan.route.points[0].z) }
+                else { routePreview = photos }
+            } label: {
+                Image(systemName: "rotate.3d").font(.headline)
+                    .frame(width: 50, height: 50).background(Color.dariAction.opacity(0.1), in: Circle())
+            }
+            .accessibilityLabel("Pratinjau 360°")
+            Button { detail = o } label: {
+                Image(systemName: "list.bullet").font(.headline)
+                    .frame(width: 50, height: 50).background(Color.dariAction.opacity(0.1), in: Circle())
+            }
+            .accessibilityLabel("Detail langkah")
+            DariButton(title: "Mulai", symbol: "location.north.fill") { path.append(.navigate(place, o)) }
         }
-        checks(o)
-        DariButton(title: "Mulai navigasi", symbol: "location.north.fill") { path.append(.navigate(place, o)) }
-    }
-
-    /// Ringkasan isi rute dari data per segmen (bukan klaim "sudah dicek").
-    private func checks(_ o: RouteOption) -> some View {
-        let g = AppModel.graph
-        let crossings = hazards.filter { $0.title.hasPrefix("Penyeberangan") }.count
-        let road = o.plan.edges.filter { model.conditions.report($0).reasons.first?.hasPrefix("Jalan mobil") == true }
-            .reduce(Float(0)) { $0 + g.length($1) }
-        return HStack(spacing: 8) {
-            tile("figure.walk", .dariAccess, "\(crossings)", "Penyeberangan")
-            tile("car.fill", road > 0 ? .dariCaution : .dariAccess, "\(Int(road)) m", "Jalan mobil")
-            tile("questionmark", .dariMuted, "\(Int(o.plan.unknownMeters)) m", "Belum dicek")
+        if let d = dataDate() {
+            Text("Data peta diperbarui \(d)").font(.caption2).foregroundStyle(Color.dariMuted)
         }
     }
 
-    private func tile(_ symbol: String, _ tint: Color, _ value: String, _ label: String) -> some View {
-        VStack(spacing: 4) {
-            IconDot(symbol: symbol, tint: tint, size: 30)
-            Text(value).font(.subheadline.bold()).foregroundStyle(Color.dariPrimary)
-            Text(label).font(.caption2).foregroundStyle(Color.dariMuted)
+    private func roadMeters(_ o: RouteOption) -> Float {
+        o.plan.edges.filter { model.conditions.report($0).reasons.first?.hasPrefix("Jalan mobil") == true }
+            .reduce(Float(0)) { $0 + AppModel.graph.length($1) }
+    }
+
+    private func stat(_ symbol: String, _ value: String, _ label: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: symbol).font(.subheadline).foregroundStyle(Color.dariMuted)
+            VStack(alignment: .leading, spacing: 0) {
+                Text(value).font(.subheadline.bold()).foregroundStyle(Color.dariPrimary)
+                Text(label).font(.caption2).foregroundStyle(Color.dariMuted)
+            }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.dariLine))
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
-/// Label di atas peta: ikon + nama (+ keterangan), dengan ekor kecil ke titiknya.
-struct MapBubble: View {
-    let symbol: String
-    let tint: Color
-    let title: String
-    let subtitle: String?
+/// Garis rute jalan kaki ala Google Maps: titik-titik bulat biru.
+struct WalkLine: MapContent {
+    let points: [CLLocationCoordinate2D]
+    var color: Color = .dariAction
+    var body: some MapContent {
+        MapPolyline(coordinates: points)
+            .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round, dash: [0.1, 6]))
+    }
+}
+
+struct StartDot: View {
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 6) {
-                IconDot(symbol: symbol, tint: tint, size: 22, filled: true)
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(title).font(.caption2.bold()).foregroundStyle(Color.dariPrimary).lineLimit(1)
-                    if let subtitle { Text(subtitle).font(.caption2).foregroundStyle(Color.dariMuted) }
-                }
-            }
-            .padding(.horizontal, 8).padding(.vertical, 6)
-            .background(.white, in: RoundedRectangle(cornerRadius: 10))
-            .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
-            Image(systemName: "triangle.fill").font(.system(size: 8)).rotationEffect(.degrees(180))
-                .foregroundStyle(.white).offset(y: -2)
+        Circle().fill(Color.dariAction).frame(width: 16, height: 16)
+            .overlay(Circle().stroke(.white, lineWidth: 3)).shadow(radius: 2)
+    }
+}
+
+/// Penanda hambatan kecil di atas rute; diketuk untuk membuka detail hambatan.
+struct HazardDot: View {
+    let condition: Condition
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "exclamationmark").font(.system(size: 11, weight: .heavy)).foregroundStyle(.white)
+                .frame(width: 22, height: 22)
+                .background(Color(condition.color), in: Circle())
+                .overlay(Circle().stroke(.white, lineWidth: 2))
+                .shadow(color: .black.opacity(0.25), radius: 2, y: 1)
+                .frame(width: 44, height: 44)
+                .contentShape(Circle())
         }
-        .frame(maxWidth: 170)
+        .accessibilityLabel("Hambatan: \(condition.title)")
     }
 }
 
@@ -1113,18 +1103,10 @@ struct HazardPreview: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Rute alternatif").font(.headline).foregroundStyle(Color.dariPrimary)
                         if let alternative {
-                            Map(initialPosition: cameraRect(alternative, pad: 0.3)) {
-                                MapPolyline(coordinates: alternative.points.map(AppModel.coordinate))
-                                    .stroke(Color.dariAction, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
-                                Annotation("", coordinate: AppModel.coordinate(alternative.points[0])) {
-                                    Circle().fill(Color.dariAction).frame(width: 14, height: 14).overlay(Circle().stroke(.white, lineWidth: 3))
-                                }
-                                Marker("", coordinate: AppModel.coordinate(alternative.points.last!)).tint(Color.dariUrgent)
-                            }
-                            .mapStyle(.standard(pointsOfInterest: .excludingAll))
-                            .allowsHitTesting(false)
-                            .frame(height: 150)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            MapSnapshot(center: AppModel.coordinate(alternative.points[0]),
+                                        path: alternative.points.map(AppModel.coordinate))
+                                .frame(height: 150)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
                             Text("\(Int(alternative.length)) m tanpa melewati hambatan ini").font(.caption).foregroundStyle(Color.dariMuted)
                         } else {
                             Text(computed ? "Tidak ada rute lain yang menghindari segmen ini." : "Mencari rute alternatif…")
@@ -1227,7 +1209,12 @@ struct StreetView: View {
     }
 }
 
-// MARK: - 4 · Navigasi
+// MARK: - 4 · Navigasi (gaya Google Maps mode jalan kaki)
+
+private extension Color {
+    static let navGreen = Color(hex: 0x0F7A3E)
+    static let navGreenDark = Color(hex: 0x0B5E30)
+}
 
 struct NavigationScreen: View {
     let model: AppModel
@@ -1239,35 +1226,20 @@ struct NavigationScreen: View {
     @State private var voiceOn = true
     @State private var lastSpoken = -1
     @State private var lastHazardSpoken = -1
-    @State private var lastTick = Date()
     @State private var lastReroute = Date.distantPast
     @State private var following = true
     @State private var camera: MapCameraPosition = .automatic
+    /// Arah kamera yang dihaluskan (derajat), supaya peta berputar pelan, tidak patah-patah.
+    @State private var smoothHeading: Double?
     /// Hambatan yang sudah dinilai pengguna ("Lanjutkan") tidak ditampilkan lagi sebagai kartu.
     @State private var acknowledged: Set<Int> = []
-
-    @State private var lastCamera = Date.distantPast
-
-    /// Peta mengikuti posisi pengguna dengan zoom jalan kaki (±350 m) dan berputar sesuai arah hadap HP.
-    /// Tidak memakai .userLocation: MapKit me-reset zoom-nya ke tampilan kota.
-    private func follow() {
-        following = true
-        withAnimation { moveCamera() }
-    }
-
-    private func moveCamera() {
-        let p = model.gpsInArea ? (model.location.local ?? SIMD2(here.x, here.z)) : SIMD2(here.x, here.z)
-        camera = .camera(MapCamera(centerCoordinate: AppModel.coordinate(p), distance: 350,
-                                   heading: model.location.heading ?? model.location.course ?? 0, pitch: 40))
-        lastCamera = .now
-    }
     @State private var show3D = false
     @State private var showAR = false
     @State private var showReport = false
     @State private var preview: Hazard?
 
     private let speech = AVSpeechSynthesizer()
-    private let timer = Timer.publish(every: 0.2, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 0.25, on: .main, in: .common).autoconnect()
 
     init(model: AppModel, place: Place, option: RouteOption, path: Binding<[Screen]>) {
         self.model = model
@@ -1280,58 +1252,79 @@ struct NavigationScreen: View {
     private var remaining: Float { max(0, route.length - travelled) }
     private var arrived: Bool { remaining < 1 }
     private var next: Route.Maneuver? { route.maneuvers.first { $0.at > travelled + 0.5 } }
+    private var afterNext: Route.Maneuver? { route.maneuvers.first { $0.at > (next?.at ?? .infinity) + 0.5 } }
     private var hazards: [Hazard] { Hazard.along(plan, model: model) }
     private var upcomingHazard: Hazard? { hazards.first { $0.at > travelled - 2 && $0.at - travelled < 40 } }
     private var hazardCard: Hazard? { upcomingHazard.flatMap { acknowledged.contains($0.edge) ? nil : $0 } }
     private var here: SIMD3<Float> { route.position(at: travelled) }
 
+    /// Nama jalan per segmen rute, diurutkan menurut jarak dari awal rute.
+    private var streets: [(at: Float, name: String)] {
+        guard let names = AppModel.graph.names else { return [] }
+        let g = AppModel.graph
+        return plan.edges.compactMap { e in
+            let name = names[e]
+            guard !name.isEmpty else { return nil }
+            let mid = (g.point(g.edges[e][0]) + g.point(g.edges[e][1])) / 2
+            return (route.project(mid).along, name)
+        }
+    }
+    /// Jalan yang dimasuki setelah titik `d` (dipakai untuk "Belok kiri ke Jalan …").
+    private func street(after d: Float) -> String? { streets.first { $0.at > d + 1 }?.name }
+    private var currentStreet: String? { streets.last { $0.at <= travelled + 5 }?.name ?? streets.first?.name }
+
+    // MARK: Peta
+
     var body: some View {
         ZStack {
             Map(position: $camera) {
-                MapPolyline(coordinates: route.points.map(AppModel.coordinate))
-                    .stroke(Color.dariAction, style: StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
+                WalkLine(points: travelledPoints, color: Color(hex: 0x9AA0A6))
+                WalkLine(points: remainingPoints)
                 ForEach(hazards) { h in
                     Annotation("", coordinate: AppModel.coordinate(route.position(at: h.at))) {
-                        IconDot(symbol: "exclamationmark", tint: Color(h.condition.color), size: 22, filled: true)
-                            .overlay(Circle().stroke(.white, lineWidth: 2))
+                        HazardDot(condition: h.condition) { preview = h }
                     }
                 }
-                Marker(place.name, systemImage: "flag.checkered", coordinate: AppModel.coordinate(route.points.last!))
-                    .tint(Color.dariAccess)
+                Marker(place.name, coordinate: AppModel.coordinate(route.points.last!)).tint(Color.dariUrgent)
                 // Titik biru bawaan iOS dengan kerucut arah hadap (kompas HP).
                 UserAnnotation()
             }
             .mapStyle(.standard(pointsOfInterest: .excludingAll))
-            .mapControls {}
-            .safeAreaPadding(.top, 200)
-            .safeAreaPadding(.bottom, 260)
+            .mapControls { MapCompass() }
+            .safeAreaPadding(.top, 170)
+            .safeAreaPadding(.bottom, 130)
             .ignoresSafeArea()
             .simultaneousGesture(DragGesture(minimumDistance: 8).onChanged { _ in following = false })
 
-            VStack(spacing: 10) {
-                instruction
-                HStack {
-                    Label(place.name, systemImage: "mappin.circle.fill")
-                        .font(.caption.bold()).foregroundStyle(Color.dariPrimary)
-                        .padding(.horizontal, 10).padding(.vertical, 6)
-                        .background(.white, in: Capsule())
-                        .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
-                    Spacer()
-                }
+            VStack(spacing: 8) {
+                banner
+                if let h = hazardCard { hazardAlert(h) }
                 Spacer()
-                HStack {
+                HStack(alignment: .bottom) {
+                    if !following {
+                        Button { follow() } label: {
+                            Label("Pusatkan ulang", systemImage: "location.north.fill")
+                                .font(.subheadline.bold()).foregroundStyle(Color.dariAction)
+                                .padding(.horizontal, 16).frame(height: 44)
+                                .background(.white, in: Capsule()).shadow(color: .black.opacity(0.15), radius: 6, y: 2)
+                        }
+                    }
                     Spacer()
                     VStack(spacing: 10) {
-                        if !following { CircleButton(symbol: "location.north.line.fill", tint: .dariAction) { follow() } }
-                        if AreaConfig.current.has3D ?? true { roundButton("3D") { show3D = true } }
-                        roundButton("AR") { showAR = true }
+                        floatingButton(voiceOn ? "speaker.wave.2.fill" : "speaker.slash.fill", voiceOn ? "Suara aktif" : "Suara mati") {
+                            voiceOn.toggle()
+                            if !voiceOn { speech.stopSpeaking(at: .immediate) }
+                        }
+                        floatingButton("exclamationmark.bubble.fill", "Laporkan hambatan") { showReport = true }
+                        if AreaConfig.current.has3D ?? true { floatingText("3D") { show3D = true } }
+                        floatingText("AR") { showAR = true }
                     }
                 }
             }
-            .padding(.horizontal)
-            .padding(.bottom, hazardCard == nil ? 250 : 320)
+            .padding(.horizontal, 12)
+            .padding(.bottom, 140)
 
-            VStack { Spacer(); bottomSheet }
+            VStack { Spacer(); bottomBar }
                 .ignoresSafeArea(edges: .bottom)
         }
         .toolbar(.hidden, for: .navigationBar)
@@ -1343,6 +1336,7 @@ struct NavigationScreen: View {
             say("Mulai. Menuju \(place.name).")
             wlog("[NAV] mulai ke \(place.name), \(Int(route.length)) m")
         }
+        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
         .fullScreenCover(isPresented: $show3D) {
             World3DView(style: .biasa, destination: place, gpsOnly: true)
                 .overlay(alignment: .topTrailing) {
@@ -1362,94 +1356,202 @@ struct NavigationScreen: View {
                           onAlternative: { preview = nil; reroute(avoiding: [h.edge]) })
         }
         .sheet(isPresented: $showReport) { ReportSheet(onSubmit: report) }
-        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
     }
 
-    private var instruction: some View {
-        let dist = Int((next?.at ?? route.length) - travelled)
-        let title = arrived ? "Kamu sudah sampai" : (next.map { "Belok \($0.left ? "kiri" : "kanan")" } ?? "Lurus terus")
-        let subtitle = arrived ? place.name : (next == nil ? "sejauh \(dist) m" : "dalam \(dist) m")
-        return HStack(spacing: 14) {
-            Image(systemName: arrived ? "flag.checkered" : (next.map { $0.left ? "arrow.turn.up.left" : "arrow.turn.up.right" } ?? "arrow.up"))
-                .font(.system(size: 32, weight: .bold))
-                .frame(width: 44)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.title3.bold())
-                Text(subtitle).font(.title3)
+    /// Bagian rute yang sudah dilewati (abu-abu) dan yang tersisa (biru), dipotong di posisi sekarang.
+    private var travelledPoints: [CLLocationCoordinate2D] {
+        let past = zip(route.points, route.cumulative).filter { $0.1 < travelled }.map(\.0)
+        return (past + [here]).map(AppModel.coordinate)
+    }
+    private var remainingPoints: [CLLocationCoordinate2D] {
+        let ahead = zip(route.points, route.cumulative).filter { $0.1 > travelled }.map(\.0)
+        return ([here] + ahead).map(AppModel.coordinate)
+    }
+
+    // MARK: Kamera
+
+    /// Kamera mengikuti pengguna seperti Google Maps: miring, berputar searah jalan, titik posisi di bagian bawah layar.
+    private func follow() {
+        following = true
+        withAnimation(.easeInOut(duration: 0.6)) { moveCamera() }
+    }
+
+    private func moveCamera() {
+        let p = model.gpsInArea ? (model.location.local ?? SIMD2(here.x, here.z)) : SIMD2(here.x, here.z)
+        let target = model.location.heading ?? model.location.course ?? routeBearing
+        smoothHeading = smoothHeading.map { blend($0, target, 0.35) } ?? target
+        let h = smoothHeading ?? 0
+        // Pusat kamera digeser ±45 m ke depan, jadi titik biru berada di sepertiga bawah layar.
+        let rad = Float(h * .pi / 180)
+        let ahead = p + SIMD2(sin(rad), -cos(rad)) * 45
+        camera = .camera(MapCamera(centerCoordinate: AppModel.coordinate(ahead), distance: 280, heading: h, pitch: 55))
+    }
+
+    /// Arah rute di posisi sekarang (dipakai kalau kompas/GPS belum memberi arah).
+    private var routeBearing: Double {
+        let a = route.position(at: travelled), b = route.position(at: travelled + 15)
+        let d = SIMD2(b.x - a.x, b.z - a.z)
+        guard simd_length(d) > 0.1 else { return 0 }
+        return (atan2(Double(d.x), Double(-d.y)) * 180 / .pi + 360).truncatingRemainder(dividingBy: 360)
+    }
+
+    /// Interpolasi sudut lewat jalur terpendek (359° → 1° tidak berputar sekeliling).
+    private func blend(_ from: Double, _ to: Double, _ t: Double) -> Double {
+        let diff = ((to - from + 540).truncatingRemainder(dividingBy: 360)) - 180
+        return (from + diff * t + 360).truncatingRemainder(dividingBy: 360)
+    }
+
+    // MARK: Banner & bar bawah
+
+    private var maneuverSymbol: String {
+        if arrived { return "flag.checkered" }
+        guard let n = next, n.at - travelled < 200 else { return "arrow.up" }
+        return n.sharp ? (n.left ? "arrow.uturn.left" : "arrow.uturn.right") : (n.left ? "arrow.turn.up.left" : "arrow.turn.up.right")
+    }
+
+    private var banner: some View {
+        let toNext = Int((next?.at ?? route.length) - travelled)
+        let turning = next.map { $0.at - travelled < 200 } ?? false
+        let title: String = {
+            if arrived { return place.name }
+            if turning, let n = next { return street(after: n.at).map { "Belok \(n.left ? "kiri" : "kanan") ke \($0)" } ?? "Belok \(n.left ? "kiri" : "kanan")" }
+            if next == nil { return "Menuju \(place.name)" }
+            return currentStreet.map { "Lurus di \($0)" } ?? "Lurus terus"
+        }()
+        return VStack(spacing: 0) {
+            HStack(alignment: .center, spacing: 14) {
+                VStack(spacing: 2) {
+                    Image(systemName: maneuverSymbol).font(.system(size: 34, weight: .bold))
+                    if !arrived { Text("\(toNext) m").font(.headline) }
+                }
+                .frame(width: 70)
+                Text(arrived ? "Kamu sudah sampai di \(title)" : title)
+                    .font(.title3.bold()).lineLimit(2).minimumScaleFactor(0.8)
+                Spacer(minLength: 0)
             }
-            Spacer()
+            .padding(.horizontal, 14).padding(.vertical, 14)
+            .background(Color.navGreen)
+
+            if let a = afterNext, let n = next, a.at - n.at < 120, !arrived {
+                HStack(spacing: 6) {
+                    Text("Lalu").font(.subheadline.weight(.semibold))
+                    Image(systemName: a.left ? "arrow.turn.up.left" : "arrow.turn.up.right").font(.subheadline.bold())
+                    Spacer()
+                }
+                .padding(.horizontal, 16).padding(.vertical, 8)
+                .background(Color.navGreenDark)
+            }
         }
         .foregroundStyle(.white)
-        .padding(18)
-        .background(Color.dariPrimary, in: RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.2), radius: 10, y: 4)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.25), radius: 8, y: 3)
     }
 
-    private func roundButton(_ title: String, action: @escaping () -> Void) -> some View {
+    private func hazardAlert(_ h: Hazard) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button { preview = h } label: {
+                HStack(spacing: 10) {
+                    IconDot(symbol: "exclamationmark.triangle.fill", tint: Color(h.condition.color), size: 34, filled: true)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(h.title).font(.subheadline.bold()).foregroundStyle(Color.dariPrimary).lineLimit(2)
+                        Text(h.at > travelled ? "\(Int(h.at - travelled)) m di depan" : "Sedang kamu lewati")
+                            .font(.caption).foregroundStyle(Color.dariMuted)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(Color.dariMuted)
+                }
+            }
+            .buttonStyle(.plain)
+            HStack(spacing: 8) {
+                Button("Cari alternatif") { reroute(avoiding: [h.edge]) }
+                    .font(.subheadline.bold()).frame(maxWidth: .infinity, minHeight: 38)
+                    .overlay(Capsule().stroke(Color.dariAction, lineWidth: 1.5))
+                Button("Lanjutkan") { acknowledged.insert(h.edge) }
+                    .font(.subheadline.bold()).foregroundStyle(.white).frame(maxWidth: .infinity, minHeight: 38)
+                    .background(Color.dariAction, in: Capsule())
+            }
+        }
+        .padding(12)
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(alignment: .leading) {
+            UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16).fill(Color(h.condition.color)).frame(width: 5)
+        }
+        .shadow(color: .black.opacity(0.15), radius: 8, y: 3)
+    }
+
+    private func floatingButton(_ symbol: String, _ label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol).font(.system(size: 18, weight: .semibold))
+                .frame(width: 48, height: 48)
+                .background(.white, in: Circle()).shadow(color: .black.opacity(0.15), radius: 6, y: 2)
+        }
+        .foregroundStyle(Color.dariPrimary)
+        .accessibilityLabel(label)
+    }
+
+    private func floatingText(_ title: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title).font(.headline).frame(width: 48, height: 48)
-                .background(.white, in: Circle()).shadow(color: .black.opacity(0.12), radius: 6, y: 2)
+                .background(.white, in: Circle()).shadow(color: .black.opacity(0.15), radius: 6, y: 2)
         }
         .foregroundStyle(Color.dariPrimary)
     }
 
-    private var bottomSheet: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                let minutes = max(1, Int((remaining / 1.1 / 60).rounded(.up)))
-                Text("\(minutes) mnt").font(.title2.bold()).foregroundStyle(Color.dariPrimary)
-                Text("\(Int(remaining)) m · tiba \(Date.now.addingTimeInterval(Double(minutes) * 60).formatted(date: .omitted, time: .shortened))")
-                    .font(.caption).foregroundStyle(Color.dariMuted)
-                Spacer()
-                gpsLabel
-            }
-
-            Button { voiceOn.toggle(); if !voiceOn { speech.stopSpeaking(at: .immediate) } } label: {
-                HStack(spacing: 12) {
-                    IconDot(symbol: voiceOn ? "speaker.wave.2.fill" : "speaker.slash.fill", tint: .dariAction, size: 44, filled: voiceOn)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Navigasi suara").font(.subheadline.bold()).foregroundStyle(Color.dariPrimary)
-                        Text(voiceOn ? "aktif" : "mati").font(.caption).foregroundStyle(Color.dariMuted)
-                    }
-                    Spacer()
-                }
-            }
-            .buttonStyle(.plain)
-
-            if let h = hazardCard {
-                HazardCard(title: "Hambatan di depan: \(h.title.lowercased())",
-                           subtitle: h.at > travelled ? "\(Int(h.at - travelled)) m" : "sedang kamu lewati",
-                           tint: Color(h.condition.color)) { preview = h }
-            }
-
-            HStack(spacing: 10) {
-                if arrived {
+    private var bottomBar: some View {
+        VStack(spacing: 12) {
+            if arrived {
+                Text("Kamu sudah sampai").font(.title3.bold()).foregroundStyle(Color.navGreen)
+                HStack(spacing: 10) {
                     DariButton(title: "Bagikan", style: .outline) { path.append(.contribute(place)) }
                     DariButton(title: "Selesai") { finish() }
-                } else if let h = hazardCard {
-                    DariButton(title: "Cari alternatif", style: .outline) { reroute(avoiding: [h.edge]) }
-                    DariButton(title: "Lanjutkan") { acknowledged.insert(h.edge) }
-                } else {
-                    DariButton(title: "Lapor", symbol: "flag", style: .outline) { showReport = true }
-                    DariButton(title: "Selesai") { finish() }
+                }
+            } else {
+                HStack(spacing: 14) {
+                    Button { finish() } label: {
+                        Image(systemName: "xmark").font(.headline).foregroundStyle(Color.dariPrimary)
+                            .frame(width: 48, height: 48).background(Color.dariLine.opacity(0.7), in: Circle())
+                    }
+                    .accessibilityLabel("Akhiri navigasi")
+                    Spacer()
+                    VStack(spacing: 2) {
+                        let minutes = max(1, Int((remaining / 1.1 / 60).rounded(.up)))
+                        Text("\(minutes) mnt").font(.title2.bold()).foregroundStyle(Color.navGreen)
+                        HStack(spacing: 6) {
+                            Text("\(Int(remaining)) m")
+                            Text("·")
+                            Text(Date.now.addingTimeInterval(Double(minutes) * 60).formatted(date: .omitted, time: .shortened))
+                        }
+                        .font(.subheadline).foregroundStyle(Color.dariMuted)
+                        gpsLabel
+                    }
+                    Spacer()
+                    Button {
+                        following = false
+                        withAnimation(.easeInOut(duration: 0.6)) { camera = cameraRect(route, pad: 0.15) }
+                    } label: {
+                        Image(systemName: "point.topleft.down.to.point.bottomright.curvepath").font(.headline)
+                            .foregroundStyle(Color.dariPrimary)
+                            .frame(width: 48, height: 48).background(Color.dariLine.opacity(0.7), in: Circle())
+                    }
+                    .accessibilityLabel("Lihat seluruh rute")
                 }
             }
         }
         .padding(.horizontal, 20)
-        .padding(.top, 16)
+        .padding(.top, 14)
         .padding(.bottom, 34)
         .frame(maxWidth: .infinity)
-        .background(Color.white, in: UnevenRoundedRectangle(topLeadingRadius: 28, topTrailingRadius: 28))
+        .background(Color.white, in: UnevenRoundedRectangle(topLeadingRadius: 24, topTrailingRadius: 24))
         .shadow(color: .black.opacity(0.12), radius: 16, y: -4)
     }
 
     @ViewBuilder private var gpsLabel: some View {
         if !model.gpsInArea {
-            Label(model.location.local == nil ? "Menunggu GPS…" : "Di luar area", systemImage: "location.slash")
+            Label(model.location.local == nil ? "Menunggu GPS…" : "Di luar area peta", systemImage: "location.slash")
                 .font(.caption2.weight(.semibold)).foregroundStyle(Color.dariCaution)
-        } else if let a = model.location.accuracy {
-            Label("±\(Int(a)) m", systemImage: "location.fill")
-                .font(.caption2).foregroundStyle(a > 20 ? Color.dariCaution : Color.dariMuted)
+        } else if let a = model.location.accuracy, a > 20 {
+            Label("Sinyal GPS lemah (±\(Int(a)) m)", systemImage: "location")
+                .font(.caption2.weight(.semibold)).foregroundStyle(Color.dariCaution)
         }
     }
 
@@ -1461,8 +1563,6 @@ struct NavigationScreen: View {
     // MARK: Logic
 
     private func tick(_ now: Date) {
-        lastTick = now
-        if following, now.timeIntervalSince(lastCamera) > 1 { withAnimation(.linear(duration: 1)) { moveCamera() } }
         let wasArrived = arrived
         // Hanya GPS asli: posisi ditempel ke rute; keluar > 12 m → rute dihitung ulang dari posisi sekarang.
         if model.gpsInArea, let p = model.location.local {
@@ -1472,11 +1572,14 @@ struct NavigationScreen: View {
             if off > 12, precise, now.timeIntervalSince(lastReroute) > 5 { lastReroute = now; reroute(from: p); return }
             travelled = along
         }
+        if following { withAnimation(.linear(duration: 0.25)) { moveCamera() } }
         if arrived && !wasArrived { say("Kamu sudah sampai di \(place.name).") }
         if let i = route.maneuvers.firstIndex(where: { $0.at > travelled + 0.5 }), i != lastSpoken,
            route.maneuvers[i].at - travelled < 15 {
             lastSpoken = i
-            say("Dalam \(Int(route.maneuvers[i].at - travelled)) meter, belok \(route.maneuvers[i].left ? "kiri" : "kanan").")
+            let m = route.maneuvers[i]
+            let onto = street(after: m.at).map { " ke \($0)" } ?? ""
+            say("Dalam \(Int(m.at - travelled)) meter, belok \(m.left ? "kiri" : "kanan")\(onto).")
         }
         if let h = upcomingHazard, h.edge != lastHazardSpoken, h.at > travelled {
             lastHazardSpoken = h.edge
